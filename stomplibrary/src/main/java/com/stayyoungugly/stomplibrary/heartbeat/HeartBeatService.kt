@@ -56,8 +56,6 @@ class HeartBeatService(
             if (serverHeartbeatNew > 0) {
                 serverHeartbeat = maxOf(serverHeartbeatNew, heartbeats[0].toInt())
             }
-            Timber.e("ServerHeartBeat = $serverHeartbeat")
-            Timber.e("ServerHeartBeat = $serverHeartbeat")
         }
 
         if (clientHeartbeat > 0 || serverHeartbeat > 0) {
@@ -65,6 +63,7 @@ class HeartBeatService(
                 Timber.d("Client will send messages every $clientHeartbeat MS")
                 setScheduleClientHeartbeat()
             }
+            Timber.e("MESSAGING")
             if (serverHeartbeat > 0) {
                 Timber.d("Client will get messages from server every $serverHeartbeat ms")
                 setScheduleServerHeartbeat()

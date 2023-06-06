@@ -72,7 +72,7 @@ class StompClient(private val connectionProvider: ConnectionProvider) {
         this.headers = headers
 
         if (isConnected()) {
-            Timber.d("Clien was already connected")
+            Timber.d("Client was already connected")
             return false
         }
 
@@ -115,6 +115,8 @@ class StompClient(private val connectionProvider: ConnectionProvider) {
                 }
             }.launchIn(CoroutineScope(dispatcher))
 
+        connectionProvider.initSocket()
+
         messagesJob = connectionProvider.messages()
             .map { message -> StompMessage.from(message) }
             .filter { stompMessage -> heartBeatTask.consumeHeartBeat(stompMessage) }
@@ -156,10 +158,8 @@ class StompClient(private val connectionProvider: ConnectionProvider) {
 
     suspend fun disconnect(): Boolean? {
         heartBeatTask.shutdown()
-
         lifecycleJob?.cancel()
         messagesJob?.cancel()
-
         Timber.d("Stomp Disconnected")
         getConnectionSharedFlow().collect()
         getMessageSharedFlow().collect()

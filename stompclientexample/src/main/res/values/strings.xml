@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">StompClient</string>
+    <string name="time_in_ms">Time in ms</string>
+    <string name="connect">CONNECT</string>
+    <string name="disconnect">DISCONNECT</string>
+    <string name="client_heartbeat">Client Heartbeat:</string>
+    <string name="server_heartbeat">Server HeartBeat:</string>
+    <string name="type_endpoint_path">Type endpoint path:</string>
+    <string name="path">Path</string>
+    <string name="subscribe">SUBSCRIBE</string>
+    <string name="unsubscribe">UNSUBSCRIBE</string>
+    <string name="type_message_to_path">Type message to path:</string>
+    <string name="message">Message</string>
+    <string name="send_message">SEND MESSAGE</string>
+    <string name="new_message_from_topic">New message from topic:</string>
+    <string name="none"><![CDATA[<none>]]></string>
+</resources>

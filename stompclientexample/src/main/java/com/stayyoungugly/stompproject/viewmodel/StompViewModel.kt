@@ -8,6 +8,7 @@ import com.stayyoungugly.stomplibrary.model.StompHeader
 import com.stayyoungugly.stomplibrary.model.StompMessage
 import com.stayyoungugly.stomplibrary.model.enum.ConnectionProviderType
 import com.stayyoungugly.stomplibrary.model.enum.HeaderType
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -44,10 +45,10 @@ class StompViewModel : ViewModel() {
     private val _wasDisconnected: MutableLiveData<Result<Boolean>> = MutableLiveData()
     val wasDisconnected: LiveData<Result<Boolean>> = _wasDisconnected
 
-    private var _lifecycleEvents: LiveData<StompEvent> = MutableLiveData()
+    private var _lifecycleEvents: MutableLiveData<StompEvent> = MutableLiveData()
     val lifecycleEvents: LiveData<StompEvent> = _lifecycleEvents
 
-    private var _messages: LiveData<StompMessage> = MutableLiveData()
+    private var _messages: MutableLiveData<StompMessage> = MutableLiveData()
     val messages: LiveData<StompMessage> = _messages
 
 
@@ -60,7 +61,12 @@ class StompViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val clientStomp =
-                    StompCreator().createClient(connectionProvider, uri, connectHttpHeaders, okHttpClient)
+                    StompCreator().createClient(
+                        connectionProvider,
+                        uri,
+                        connectHttpHeaders,
+                        okHttpClient
+                    )
                 _client.value = Result.success(clientStomp)
                 stompClient = clientStomp
             } catch (ex: Exception) {
@@ -107,8 +113,9 @@ class StompViewModel : ViewModel() {
     fun getLifecycle() {
         viewModelScope.launch {
             try {
-                val lifecycle = stompClient.sessionLifecycleFlow().asLiveData(viewModelScope.coroutineContext)
-                _lifecycleEvents = lifecycle
+                stompClient.sessionLifecycleFlow().collect {
+                    _lifecycleEvents.value = it
+                }
             } catch (ex: Exception) {
                 _error.value = ex
             }
@@ -131,24 +138,9 @@ class StompViewModel : ViewModel() {
     fun subscribe(destination: String) {
         viewModelScope.launch {
             try {
-                var topic =
-                    stompClient.subscribe(destination)
-                        .onEach { Timber.e(it.payload) }
-                //.asLiveData(viewModelScope.coroutineContext)
                 _wasSubscribed.value = Result.success(true)
-                //_messages = topic
-            } catch (ex: Exception) {
-                _wasSubscribed.value = Result.failure(ex)
-                _error.value = ex
-            }
-        }
-    }
-
-    fun check() {
-        viewModelScope.launch {
-            try {
-                stompClient.getMessageSharedFlow().onEach {
-                    Timber.e("newwww: $it")
+                stompClient.subscribe(destination).collect {
+                    _messages.value = it
                 }
             } catch (ex: Exception) {
                 _wasSubscribed.value = Result.failure(ex)

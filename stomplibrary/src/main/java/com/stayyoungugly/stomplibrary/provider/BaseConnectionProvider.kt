@@ -12,10 +12,7 @@ abstract class BaseConnectionProvider : ConnectionProvider {
 
     private val lifecycleStream = MutableSharedFlow<StompEvent>(replay = 5)
     private val messagesStream = MutableSharedFlow<String>(replay = 5)
-    override suspend fun messages(): Flow<String> = flow {
-        emitAll(initSocket().onEach { delay(0) })
-        messagesStream.collect { emit(it) }
-    }
+    override suspend fun messages(): Flow<String> = messagesStream
 
     override suspend fun disconnect(): Boolean? {
         return rawDisconnect()
@@ -24,13 +21,13 @@ abstract class BaseConnectionProvider : ConnectionProvider {
     protected abstract fun createWebSocketConnection()
     protected abstract fun rawDisconnect(): Boolean?
 
-    private fun initSocket(): Flow<String> = flow {
+    override fun initSocket() {
         createWebSocketConnection()
     }
 
     override fun send(stompMessage: String): Boolean? {
         if (getSocket() == null) {
-            throw IllegalStateException("Not connected")
+            throw IllegalStateException("No CONNECTION")
         } else {
             println("Send STOMP message: $stompMessage")
             return rawSend(stompMessage)

@@ -1,4 +1,4 @@
-package com.stayyoungugly.stomplibrary.matcher
+package com.stayyoungugly.stomplibrary.util
 
 import com.stayyoungugly.stomplibrary.model.StompMessage
 

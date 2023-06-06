@@ -46,6 +46,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
 
+    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4"
@@ -66,7 +69,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    // Koin
-    implementation "io.insert-koin:koin-android:3.2.0"
 }

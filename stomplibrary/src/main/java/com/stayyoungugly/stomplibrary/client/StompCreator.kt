@@ -7,13 +7,12 @@ import okhttp3.OkHttpClient
 
 class StompCreator {
 
-    fun create(
+    fun createClient(
         connectionProvider: ConnectionProviderType,
         uri: String,
         connectHttpHeaders: Map<String, String>? = null,
         okHttpClient: OkHttpClient? = null
     ): StompClient {
-
         if (connectionProvider == ConnectionProviderType.OKHTTP) {
             return createStompClient(
                 OkHttpConnectionProvider(
@@ -23,7 +22,7 @@ class StompCreator {
                 )
             )
         }
-        throw IllegalArgumentException("ConnectionProvider type not supported: $connectionProvider")
+        throw IllegalArgumentException("ConnectionProvider type error")
     }
 
     private fun createStompClient(connectionProvider: ConnectionProvider): StompClient {

@@ -2,8 +2,10 @@ package com.stayyoungugly.stomplibrary.provider
 
 import com.stayyoungugly.stomplibrary.model.StompEvent
 import com.stayyoungugly.stomplibrary.model.enum.EventType
+import kotlinx.coroutines.coroutineScope
 import okhttp3.*
 import okio.ByteString
+import timber.log.Timber
 import java.util.*
 
 class OkHttpConnectionProvider(
@@ -12,14 +14,10 @@ class OkHttpConnectionProvider(
     private val okHttpClient: OkHttpClient
 ) : BaseConnectionProvider() {
 
-    companion object {
-        private const val TAG = "OkHttpConnProvider"
-    }
-
     private var openSocket: WebSocket? = null
 
-    override fun rawDisconnect() {
-        openSocket?.close(1000, "")
+    override fun rawDisconnect(): Boolean? {
+        return openSocket?.close(1000, "")
     }
 
     override fun createWebSocketConnection() {
@@ -33,8 +31,7 @@ class OkHttpConnectionProvider(
             object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
                     val openEvent = StompEvent(EventType.OPENED)
-
-                    openEvent.responseHeaders = response.headers.toMap() as TreeMap<String, String>
+                    openEvent.responseHeaders = response.headers.toMap()
                     emitStompEvent(openEvent)
                 }
 
@@ -55,6 +52,7 @@ class OkHttpConnectionProvider(
                     emitStompEvent(StompEvent(EventType.ERROR, Exception(t)))
                     openSocket = null
                     emitStompEvent(StompEvent(EventType.CLOSED))
+                    Timber.e(t)
                 }
 
                 override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -64,8 +62,8 @@ class OkHttpConnectionProvider(
         )
     }
 
-    override fun rawSend(stompMessage: String) {
-        openSocket?.send(stompMessage)
+    override fun rawSend(stompMessage: String): Boolean? {
+        return openSocket?.send(stompMessage)
     }
 
     override fun getSocket(): Any? {

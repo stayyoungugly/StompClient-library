@@ -7,5 +7,5 @@ data class StompEvent(
     val eventType: EventType,
     val eventException: Exception? = null,
     val eventMessage: String? = null,
-    var responseHeaders: TreeMap<String, String> = TreeMap<String, String>()
+    var responseHeaders: Map<String, String> = LinkedHashMap<String, String>()
 )

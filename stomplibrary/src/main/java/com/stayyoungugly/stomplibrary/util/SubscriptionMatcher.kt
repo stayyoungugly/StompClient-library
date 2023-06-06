@@ -1,7 +1,6 @@
-package com.stayyoungugly.stomplibrary.matcher
+package com.stayyoungugly.stomplibrary.util
 
 import com.stayyoungugly.stomplibrary.client.StompClient
-import com.stayyoungugly.stomplibrary.model.StompHeader
 import com.stayyoungugly.stomplibrary.model.StompMessage
 import com.stayyoungugly.stomplibrary.model.enum.HeaderType
 

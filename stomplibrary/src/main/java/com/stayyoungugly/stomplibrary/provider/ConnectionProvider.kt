@@ -4,11 +4,11 @@ import com.stayyoungugly.stomplibrary.model.StompEvent
 import kotlinx.coroutines.flow.Flow
 
 interface ConnectionProvider {
-    fun messages(): Flow<String>
+    suspend fun messages(): Flow<String>
 
-    fun send(stompMessage: String)
+    fun send(stompMessage: String): Boolean?
 
-    fun lifecycle(): Flow<StompEvent>
+    fun sessionLifecycle(): Flow<StompEvent>
 
-    suspend fun disconnect()
+    suspend fun disconnect(): Boolean?
 }
